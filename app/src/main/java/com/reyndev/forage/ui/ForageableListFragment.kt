@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.reyndev.forage.BaseApplication
 import com.reyndev.forage.R
+import com.reyndev.forage.data.ForageDatabase
 import com.reyndev.forage.databinding.FragmentForageableListBinding
 import com.reyndev.forage.ui.adapter.ForageableListAdapter
 import com.reyndev.forage.ui.viewmodel.ForageableViewModel
+import com.reyndev.forage.ui.viewmodel.ForageableViewModelFactory
 
 /**
  * A fragment to view the list of [Forageable]s stored in the database.
@@ -21,7 +24,11 @@ class ForageableListFragment : Fragment() {
     // TODO: Refactor the creation of the view model to take an instance of
     //  ForageableViewModelFactory. The factory should take an instance of the Database retrieved
     //  from BaseApplication
-    private val viewModel: ForageableViewModel by activityViewModels()
+    private val viewModel: ForageableViewModel by activityViewModels() {
+        ForageableViewModelFactory(
+            (activity?.application as BaseApplication).database.forageableDao()
+        )
+    }
 
     private var _binding: FragmentForageableListBinding? = null
 
@@ -47,6 +54,11 @@ class ForageableListFragment : Fragment() {
         }
 
         // TODO: observe the list of forageables from the view model and submit it the adapter
+        viewModel.forageables.observe(viewLifecycleOwner) { items ->
+            items.let {
+                adapter.submitList(it)
+            }
+        }
 
         binding.apply {
             recyclerView.adapter = adapter

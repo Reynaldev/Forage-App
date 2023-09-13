@@ -1,6 +1,7 @@
 package com.reyndev.forage
 
 import android.app.Application
+import com.reyndev.forage.data.ForageDatabase
 
 /**
  * An application class that inherits from [Application], allows for the creation of a singleton
@@ -8,4 +9,5 @@ import android.app.Application
  */
 class BaseApplication : Application() {
     // TODO: provide a ForageDatabase value by lazy here
+    val database: ForageDatabase by lazy { ForageDatabase.getDatabase(this) }
 }
